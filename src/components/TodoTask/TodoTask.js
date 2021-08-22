@@ -8,7 +8,8 @@ class TodoTask extends Component{
         super(props);
         this.state = {
             tags: this.props.tags,
-            completed: this.props.completed
+            completed: this.props.completed, 
+            sortRender: this.props.sortRender
         }
         this.removeTagTask = this.removeTagTask.bind(this);
         this.toggleTaskStatus = this.toggleTaskStatus.bind(this);
@@ -31,6 +32,11 @@ class TodoTask extends Component{
         })
         this.props.mutateTodo(this.props.taskId);
     }
+
+    componentDidMount(){
+        this.props.resetSortRender();
+        this.forceUpdate()
+    }
     render(){
         let tagHTML;
         if (this.state.tags.length == 0){
@@ -41,11 +47,20 @@ class TodoTask extends Component{
             ))
 
         }
-
+        let checkType;
+        if (this.props.sortRender){
+            
+            checkType = this.props.completed; 
+            console.log("RERE")
+        }else{
+            checkType = this.state.completed;
+            console.log("SESE")
+        }
         return(
             <div className="shadow-xl box-border border-4 border-yellow-400 p-4 rounded-2xl mb-3">
+            {console.log("CHECK STATUS", this.state.completed, "TASK", this.props.taskTitle)}
             <Switch
-                checked={this.state.completed}
+                checked={checkType}
                 onChange={this.toggleTaskStatus}
                 name="completedButton"
                 inputProps={{ 'aria-label': 'secondary checkbox' }}

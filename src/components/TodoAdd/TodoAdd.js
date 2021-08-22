@@ -85,6 +85,7 @@ class TodoAdd extends Component{
             document.getElementById("taskTitle").value = "";
             document.getElementById("tagInput").value = "";
             this.props.updateTodoList(this.tasks);
+            this.props.resortList();
         }
     }
 

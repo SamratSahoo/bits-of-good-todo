@@ -13,8 +13,7 @@ class ToggleButton extends Component{
     changeStatus(){
         this.setState({
             status: !this.state.status
-        })
-        this.props.getFunction(this.state.status)
+        }, this.props.getFunction)
     }
 
     render(){

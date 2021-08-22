@@ -12,10 +12,10 @@ Hello, thank you for showing your interest in Bits of Good! This semester, we ar
 7. ~~The form should be cleared out after creating a new todo item (title text input field, tag list, tag input field, due date input field should be cleared after creating a new todo item)~~
 
 ### Feature 2: Sort Section
-1. Sort section should have sort by date and sort by completed options
-2. User can sort by date in increasing order by clicking on sort by date option (if todo item A has due date 8/28/2021 and todo item B has due date 9/1/2021, todo item A should appear before todo item B)
-3. User can bring incompleted todo items to front and completed items to the back by clicking on sort by completed option 
-4. If both buttons are toggled, items should be sorted by completedness first and each section, completed and incompleted, should be sorted by dates in increasing order
+1. ~~Sort section should have sort by date and sort by completed options~~
+2. ~~User can sort by date in increasing order by clicking on sort by date option (if todo item A has due date 8/28/2021 and todo item B has due date 9/1/2021, todo item A should appear before todo item B)~~
+3. ~~User can bring incompleted todo items to front and completed items to the back by clicking on sort by completed option~~
+4. ~~If both buttons are toggled, items should be sorted by completedness first and each section, completed and incompleted, should be sorted by dates in increasing order~~
 6. (Bonus) Implement a filter feature that filters the list of todo items based on tags. Tags should be displayed as dropdown and users should be able to select multiple tags from the dropdown. Note that this is a filter feature, so any todo items that does not contain the feature should not be displayed. Resetting filters should revert the array to previous state (display all items) 
 
 ### Feature 3: Todo List section

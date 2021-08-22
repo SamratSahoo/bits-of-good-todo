@@ -10,15 +10,18 @@ class TodoPage extends Component{
         this.state = {
             todoList: [],
             sortDate: false,
-            sortComplete: false
+            sortComplete: false,
+            renderTheSort: false
         }
         this.todoAddRef = React.createRef();
         this.toggleSortDateRef = React.createRef();
-        this.toggleSoftCompleteRef = React.createRef();
+        this.toggleSortCompleteRef = React.createRef();
         this.updateTodoList = this.updateTodoList.bind(this);
         this.todoStatusChange = this.todoStatusChange.bind(this);
         this.getSortComplete = this.getSortComplete.bind(this);
         this.getSortDate = this.getSortDate.bind(this);
+        this.sortElements = this.sortElements.bind(this);
+        this.resetRenderSort = this.resetRenderSort.bind(this);
     }
 
     async updateTodoList(childTasks){
@@ -32,7 +35,7 @@ class TodoPage extends Component{
         this.todoList = this.todoAddRef.current.state.addedTasks;
         this.setState({
             sortDate: this.toggleSortDateRef.current.props.status,
-            sortElements: this.toggleSoftCompleteRef.current.props.status 
+            sortElements: this.toggleSortCompleteRef.current.props.status 
         })
     }
 
@@ -50,7 +53,10 @@ class TodoPage extends Component{
     }
 
     sortElements(){
-       if(this.state.sortComplete && this.state.sortDate){
+       if(this.toggleSortDateRef.current.state.status && this.toggleSortCompleteRef.current.state.status){
+           this.setState({
+               renderTheSort: true
+           });
            var completedArray = [];
            var incompletedArray = [];
 
@@ -61,27 +67,35 @@ class TodoPage extends Component{
                    incompletedArray.push(task);
                 };
            })
-
            completedArray.sort(function(a,b){
-            return new Date(b.date) - new Date(a.date);
+            return a.selectedDate - b.selectedDate;
            })
             incompletedArray.sort(function(a,b){
-                return new Date(b.date) - new Date(a.date);
+                return a.selectedDate - b.selectedDate;
             })
 
-            var sortedBoth = completedArray.concat(incompletedArray);
+            var sortedBoth = incompletedArray.concat(completedArray);
             this.setState({
                 todoList: sortedBoth
             })
-       }else if(this.state.sortDate){
+
+            this.forceUpdate()
+       } else if(this.toggleSortDateRef.current.state.status){
            var todoListCopy = this.state.todoList;
-           todoListCopy.sort(function(a,b){
-            return new Date(b.date) - new Date(a.date);
+           todoListCopy = todoListCopy.sort(function(a,b){
+            return a.selectedDate - b.selectedDate;
            })
+           console.log(todoListCopy);
            this.setState({
             todoList: todoListCopy
         })
-       }else if(this.state.sortComplete){
+        this.forceUpdate()
+       }else if(this.toggleSortCompleteRef.current.state.status){
+        this.setState({
+            renderTheSort: true
+        });
+        var completedArray = [];
+        var incompletedArray = [];
         this.state.todoList.forEach((task) => {
             if (task.completed){
                  completedArray.push(task);
@@ -89,42 +103,48 @@ class TodoPage extends Component{
                 incompletedArray.push(task);
              };
         })
-
-        var sortedBoth = completedArray.concat(incompletedArray);
+        var sortedBoth = incompletedArray.concat(completedArray);
         this.setState({
             todoList: sortedBoth
-        })
-        
+        }, this.forceUpdate())  
        }
     }
 
     todoStatusChange(index){
-        console.log(index);
-        this.state.todoList[index].completed = !this.state.todoList[index].completed
-        console.log(this.state.todoList[index].completed)
-    }
-    async getSortComplete(sortCompleteVal){
-        await this.setState({
-            sortComplete: sortCompleteVal,
-        })
-        console.log(this.state.sortComplete);
-        await this.sortElements()
-        console.log(this.state.todoList);
-    }
-
-    getSortDate(sortDateVal){
+        var oldTodoList = this.state.todoList;
+        var todoItem = oldTodoList[index];
+        todoItem.completed = !(todoItem.completed);
+        delete oldTodoList[index];
+        oldTodoList[index] = todoItem;
         this.setState({
-            sortDate: sortDateVal,
-        })
-        this.sortElements()
+            todoList: oldTodoList
+        }, console.log(this.state.todoList))
 
+        }
+
+    getSortComplete(){
+        console.log(this.toggleSortCompleteRef.current.state.status)
+        this.sortElements()
     }
+
+
+    getSortDate(){
+        console.log(this.toggleSortDateRef.current.state.status)
+        this.sortElements()
+    }
+
+    resetRenderSort(){
+        this.setState({
+            renderTheSort: false
+        })
+    }
+
     render(){
         return(
             <div className="grid grid-cols-2 gap-8 ml-48 mr-48 mt-24  mb-24">
                 {/* Add new task on todo list*/}
                   <div>
-                      <TodoAdd ref={this.todoAddRef} updateTodoList={this.updateTodoList}></TodoAdd>
+                      <TodoAdd ref={this.todoAddRef} updateTodoList={this.updateTodoList} resortList={this.sortElements}></TodoAdd>
                   </div>
                   <div>
                     <div className="grid grid-cols-4">
@@ -137,20 +157,28 @@ class TodoPage extends Component{
                     <ToggleButton
                             status={this.state.sortComplete}
                             text="Sort by Status"
-                            ref={this.toggleSoftCompleteRef}
+                            ref={this.toggleSortCompleteRef}
                             getFunction={this.getSortComplete}
                         />
                     </div>
-                        {console.log(this.state.todoList)}
                         {this.state.todoList.map((task, index) => (
                             <TodoTask taskTitle={task.taskTitle} 
                                 tags={task.tags} 
                                 dueDate={task.dueDate}
                                 completed={task.completed}
                                 taskId={index}
-                                mutateTodo={this.todoStatusChange}>    
+                                mutateTodo={this.todoStatusChange}
+                                sortRender={this.state.renderTheSort}
+                                resetSortRender={this.resetRenderSort}   > 
                             </TodoTask>
                         ))}
+                        {this.state.todoList.map((task, index) => {
+                            console.log("Title: " + task.taskTitle);
+                            console.log("Status: " + task.completed)
+                            console.log("Date: " + task.dueDate);
+                            console.log(this.state.todoList);
+                            console.log("====================")
+                        })}
                   </div>
             </div>
         )

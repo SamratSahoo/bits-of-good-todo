@@ -69,7 +69,8 @@ class TodoAdd extends Component{
                     taskTitle: this.state.taskTitle,
                     dueDate: this.state.selectedDateString,
                     tags: this.state.tags,
-                    selectedDate: this.state.selectedDate
+                    selectedDate: this.state.selectedDate,
+                    completed: false
                 })
             this.setState({ addedTasks: this.tasks })
             // Reset Form State
@@ -83,7 +84,6 @@ class TodoAdd extends Component{
             })
             document.getElementById("taskTitle").value = "";
             document.getElementById("tagInput").value = "";
-            console.log(this.tasks)
             this.props.updateTodoList(this.tasks);
         }
     }

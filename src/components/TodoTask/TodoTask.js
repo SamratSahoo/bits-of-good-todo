@@ -8,7 +8,7 @@ class TodoTask extends Component{
         super(props);
         this.state = {
             tags: this.props.tags,
-            completed: false
+            completed: this.props.completed
         }
         this.removeTagTask = this.removeTagTask.bind(this);
         this.toggleTaskStatus = this.toggleTaskStatus.bind(this);
@@ -29,6 +29,7 @@ class TodoTask extends Component{
         this.setState({
             completed: !this.state.completed
         })
+        this.props.mutateTodo(this.props.taskId);
     }
     render(){
         let tagHTML;
